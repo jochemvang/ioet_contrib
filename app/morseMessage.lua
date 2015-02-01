@@ -7,7 +7,7 @@ print ("Morse messages")
 
 shield.Button.start()
 shield.Button.whenever(3, "RISING", function()
-						  local t = morse.send("NOCTURNAL", storm.io.D6, 200)
+						  local t = morse.send("SOS SOS", storm.io.D6, 200)
 						  shield.Button.when(1, "RISING", t.stop)
 									end)
 
