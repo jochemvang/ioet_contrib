@@ -99,10 +99,13 @@ int contrib_makecounter(lua_State *L)
     return 1; //return the closure
 }
 
-//Creates a new LED_Strip and returns it and sets all the LEDs to 0
-//Format: size, sclk, sdo
-//Format: uint16_t, uint16_t, uint16_t
-//Return: struct LED_Strip * strip
+/*
+ Authors: Jose Oyola, Jochem van Gaalen, Naren Vasanad
+ *Creates a new LED_Strip and returns it and sets all the LEDs to 0
+ *Format: size, sclk, sdo
+ *Format: uint32_t, uint32_t, uint16_t
+ *Return: struct LED_Strip * strip
+*/
 static int contrib_led_init(lua_State *L)
 {
   uint16_t size = lua_tonumber(L, 1);
@@ -113,9 +116,12 @@ static int contrib_led_init(lua_State *L)
   return 1;
 }
 
-//Shows the LEDs with the colors they've been set to
-//Format: strip
-//Format: struct LED_Strip *
+/*
+ Authors: Jose Oyola, Jochem van Gaalen, Naren Vasanad
+ *Shows the LEDs with the colors they've been set to
+ *Format: strip
+ *Format: struct LED_Strip *
+*/
 static int contrib_led_show(lua_State *L)
 {
   struct LED_Strip * strip  = lua_touserdata(L, 1);
@@ -123,10 +129,13 @@ static int contrib_led_show(lua_State *L)
   return 0;
 }
 
-//Sets a particular LED with a color
-//Have to run show after this to actually update the colors
-//Format: strip, index, reg, green, blue
-//Format: struct LED_Strip *, uint32_t, char, char, char
+/*
+ Authors: Jose Oyola, Jochem van Gaalen, Naren Vasanad
+ *Sets a particular LED with a color
+ *Have to run show after this to actually update the colors
+ *Format: strip, index, reg, green, blue
+ *Format: struct LED_Strip *, uint32_t, char, char, char
+*/
 static int contrib_led_set(lua_State *L)
 {
   struct LED_Strip * strip = lua_touserdata(L, 1);
@@ -144,6 +153,8 @@ void delay_led(uint16_t ticks)
   for(i=0;i<ticks;i++);
 }
 
+//This is a function to test the supernight led strip
+//Actual implementation is in led.c
 static int contrib_led_strip_write(lua_State *L)
 {
   // Initialization

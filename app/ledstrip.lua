@@ -1,3 +1,13 @@
+--[[
+ Application for supernight LED strips
+ Authors: Jose Oyola, Jochem van Gaalen, Naren Vasanad
+ This application shows how supernight LEDs can be used
+ First : create an LED strip object using led_init
+ Second: set the LEDs with the index and the color
+  Note: color is from 0 to 31 since only 5 bits are used per color
+ Third : show the LEDs so that the strip gets updated
+]]
+
 require "cord" -- scheduler / fiber library
 
 storm.io.set_mode(storm.io.OUTPUT, storm.io.D2)
