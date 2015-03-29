@@ -53,6 +53,73 @@ int contrib_fourth_root_m1000(lua_State *L) //mandatory signature
     return 1; //one return value
 }
 
+// This function takes in a single value in the range of 2048 to 4096
+// and converts it into an RGB value
+// The function returns three values: red, green and blue
+int contrib_val2rgb(lua_State *L)
+{
+    int i;
+    double f, p, q, t, s, v;
+    int red, green, blue;
+    // Get the single input
+    int val = (int) luaL_checknumber(L, 1);
+    int cur_level = (int) luaL_checknumber(L, 2);
+    int max_level = (int) luaL_checknumber(L, 3);
+    // Multiply by 6 since there are 6 different possible ranges
+    // Also correcting for the ADC value that was between 2048 and 4096
+    //double h = 6*(val-2048)/2048.0;
+    double h = 6*cur_level/max_level;
+    // Just in case the ADC value was lower
+    if (h < 0) {
+        h = 0.0;
+    }
+    s = 1.0;
+    v = 255.0;
+ 
+    // Actual color converstion algorithm starts here
+    i = (int) h;
+    f = h - i;            // factorial part of h
+    p = (unsigned char)(v * ( 1 - s ));
+    q = (unsigned char)(v * ( 1 - s * f ));
+    t = (unsigned char)(v * ( 1 - s * ( 1 - f ) ));
+ 
+    switch(i) {
+        case 0:
+            red = v;
+            green = t;
+            blue = p;
+            break;
+        case 1:
+            red = q;
+            green = v;
+            blue = p;
+            break;
+        case 2:
+            red = p;
+            green = v;
+            blue = t;
+            break;
+        case 3:
+            red = p;
+            green = q;
+            blue = v;
+            break;
+        case 4:
+            red = t;
+            green = p;
+            blue = v;
+            break;
+        default:        // case 5:
+            red = v;
+            green = p;
+            blue = q;
+            break;
+    }
+    lua_pushnumber(L, red);
+    lua_pushnumber(L, green);
+    lua_pushnumber(L, blue);
+    return 3; //three return values
+}
 
 int contrib_run_foobar(lua_State *L)
 {
@@ -260,7 +327,12 @@ static int contrib_led_strip_write(lua_State *L)
   return 0;
 }
 
-
+/**
+ * Prints out hello world
+ *
+ * Lua signature: hello() -> nil
+ * Maintainer: Michael Andersen <m.andersen@cs.berkeley.edu>
+ */
 static int contrib_hello(lua_State *L)
 {
     printf("Hello world\n");
@@ -333,15 +405,13 @@ const LUA_REG_TYPE contrib_native_map[] =
     { LSTRKEY( "hello" ), LFUNCVAL ( contrib_hello ) },
     { LSTRKEY( "helloX" ), LFUNCVAL ( contrib_helloX_entry ) },
     { LSTRKEY( "fourth_root"), LFUNCVAL ( contrib_fourth_root_m1000 ) },
+    { LSTRKEY( "val2rgb"), LFUNCVAL ( contrib_val2rgb ) },
     { LSTRKEY( "run_foobar"), LFUNCVAL ( contrib_run_foobar ) },
     { LSTRKEY( "makecounter"), LFUNCVAL ( contrib_makecounter ) },
-    { LSTRKEY( "led_strip_write"), LFUNCVAL( contrib_led_strip_write)},
-    { LSTRKEY( "led_init"), LFUNCVAL( contrib_led_init)},
-    { LSTRKEY( "led_show"), LFUNCVAL( contrib_led_show)},
-    { LSTRKEY( "led_set"), LFUNCVAL( contrib_led_set)},
 
     SVCD_SYMBOLS
     ADCIFE_SYMBOLS
+
     /* Constants for the Temp sensor. */
     // -- Register address --
     { LSTRKEY( "TMP006_VOLTAGE" ), LNUMVAL(0x00)},
