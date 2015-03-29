@@ -27,7 +27,7 @@
 #include "natlib/util.c"
 #include "natlib/svcd.c"
 #include "natlib/led.c"
-
+#include "natlib/analog/analog.c"
 
 ////////////////// BEGIN FUNCTIONS /////////////////////////////
 
@@ -341,7 +341,7 @@ const LUA_REG_TYPE contrib_native_map[] =
     { LSTRKEY( "led_set"), LFUNCVAL( contrib_led_set)},
 
     SVCD_SYMBOLS
-
+    ADCIFE_SYMBOLS
     /* Constants for the Temp sensor. */
     // -- Register address --
     { LSTRKEY( "TMP006_VOLTAGE" ), LNUMVAL(0x00)},
