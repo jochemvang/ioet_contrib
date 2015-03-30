@@ -408,6 +408,10 @@ const LUA_REG_TYPE contrib_native_map[] =
     { LSTRKEY( "val2rgb"), LFUNCVAL ( contrib_val2rgb ) },
     { LSTRKEY( "run_foobar"), LFUNCVAL ( contrib_run_foobar ) },
     { LSTRKEY( "makecounter"), LFUNCVAL ( contrib_makecounter ) },
+    { LSTRKEY( "led_init"), LFUNCVAL ( contrib_led_init ) },
+    { LSTRKEY( "led_show"), LFUNCVAL ( contrib_led_show ) },
+    { LSTRKEY( "led_set"), LFUNCVAL ( contrib_led_set ) },
+
 
     SVCD_SYMBOLS
     ADCIFE_SYMBOLS

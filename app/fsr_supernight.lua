@@ -9,7 +9,6 @@ cord.new(function()
 	while true do
 		storm.n.adcife_init()
 		val = storm.n.adcife_sample_an0(0)
-		red, green, blue = storm.n.val2rgb(val)
 		if val < 2070 then
 			val = 2070
 		end
@@ -18,9 +17,10 @@ cord.new(function()
 		end
 		val = val - 2070
 		level = 50 * val/(4000-2070)
+		red, green, blue = storm.n.val2rgb(val, level, 50)
 		for i=0,49 do
 			if i <= level then
-				storm.n.led_set(strip, i, 10, 0, 0)
+				storm.n.led_set(strip, i, red/8, green/8, blue/8)
 			else
 				storm.n.led_set(strip, i, 0, 0, 0)
 			end
