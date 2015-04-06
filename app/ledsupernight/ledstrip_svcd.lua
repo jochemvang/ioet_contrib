@@ -21,7 +21,7 @@ SVCD.init("ledsupernight", function()
         local red = ps:get(2)
 	local green = ps:get(3)
 	local blue = ps:get(4)
-        print ("got a request to light led ", position, " color r = ", red, ", g = ", green, ", b = ", blue)
+        --print ("got a request to light led ", position, " color r = ", red, ", g = ", green, ", b = ", blue)
 
         storm.n.led_set(strip, position, red, green, blue)
     end)
@@ -48,6 +48,16 @@ SVCD.init("ledsupernight", function()
         print ("got a request to clear led ", position)
 
         storm.n.led_set(strip, position, 0, 0, 0)
+    end)
+
+    cord.new(function()
+        while true do
+            local msg = "This is supernight" --MOTDs[math.random(1,#MOTDs)]
+            local arr = storm.array.create(#msg+1,storm.array.UINT8)
+            arr:set_pstring(0, msg)
+            SVCD.notify(0x3009, 0x400a, arr:as_str())
+            cord.await(storm.os.invokeLater, 3*storm.os.SECOND)
+        end
     end)
 end)
 
