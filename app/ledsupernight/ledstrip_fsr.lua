@@ -2,10 +2,12 @@
 require "cord"
 require "svcd"
 
+storm.io.set_mode(storm.io.OUTPUT, storm.io.D2)
+storm.io.set_mode(storm.io.OUTPUT, storm.io.D3)
+
 strip = storm.n.led_init(50, 0x10000, 0x1000)
 
-
-MOTDs = {"Default message!!1" }
+MOTDs = {"Default message!!" }
 
 SVCD.init("ledsupernight", function()
     print "starting"
@@ -25,7 +27,7 @@ SVCD.init("ledsupernight", function()
     -- LED show()
     SVCD.add_attribute(0x3101, 0x4106, function(pay, srcip, srcport)
         print ("got a request to show leds ")
-        storm.n.led_show(strip);
+        storm.n.led_show(strip)
     end)
 
     -- LED clear()
@@ -34,7 +36,7 @@ SVCD.init("ledsupernight", function()
 	for i=1,49 do
 		storm.n.led_set(strip, i, 0, 0, 0)
 	end
-        storm.n.led_show(strip);
+        storm.n.led_show(strip)
     end)
 
     -- LED clear(position)
@@ -46,46 +48,25 @@ SVCD.init("ledsupernight", function()
         storm.n.led_set(strip, position, 0, 0, 0)
     end)
 
-
-
 --FSR
---[[
     SVCD.add_service(0x3102)
-    -- LED set(position, r, g, b)
+    
     SVCD.add_attribute(0x3102, 0x4205, function(pay, srcip, srcport)
-        print ("sending FSR notifications")
-	storm.n.adcife_init()
-	val = storm.n.adcife_sample_an0(2)
-        --TODO Send val
-	SVCD.notify(0x3102, 0x4205, val)
-	cord.await(storm.os.invokeLater, 70*storm.os.MILLISECOND
-    end)]]--
+    end)
+
     cord.new(function()
         while true do
             print ("sending FSR notifications")
 	    storm.n.adcife_init()
 	    local val = storm.n.adcife_sample_an0(2)
+	    local val_str = tostring(val)
 	    print ("Value = ", val)
-            local arr = storm.array.create(1,storm.array.UINT16)
-            arr:set(1, val)
+            local arr = storm.array.create(#val_str+1, storm.array.UINT8)
+            arr:set_pstring(0, val_str)
             SVCD.notify(0x3102, 0x4205, arr:as_str())
             cord.await(storm.os.invokeLater, 1*storm.os.SECOND)
         end
     end)
-
-
---TODO figure out what to do widdis
-    cord.new(function()
-        while true do
-            local msg = MOTDs[math.random(1,#MOTDs)]
-            local arr = storm.array.create(#msg+1,storm.array.UINT8)
-            arr:set_pstring(0, msg)
-            SVCD.notify(0x3101, 0x4108, arr:as_str())
-            cord.await(storm.os.invokeLater, 3*storm.os.SECOND)
-        end
-    end)
 end)
 
-
 cord.enter_loop()
-
